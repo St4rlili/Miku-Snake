@@ -1,0 +1,481 @@
+/* ---------- BASE DE LA PÁGINA ---------- */
+
+* {
+  box-sizing: border-box;
+}
+
+html, body {
+  margin: 0;
+  min-height: 100%;
+}
+
+body {
+  font-family: "Zen Maru Gothic", system-ui, sans-serif;
+  color: #eafbf9;
+  background:
+    radial-gradient(900px 500px at 15% -10%, rgba(57, 197, 187, 0.22), transparent 60%),
+    radial-gradient(700px 500px at 100% 100%, rgba(255, 95, 162, 0.16), transparent 60%),
+    #0a1a22;
+  background-attachment: fixed;
+  padding: 24px 16px 48px;
+  overflow-x: hidden;
+}
+
+
+/* ---------- FONDO: NOTAS MUSICALES ---------- */
+
+.notes {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.notes span {
+  position: absolute;
+  bottom: -40px;
+  font-size: 28px;
+  color: #39c5bb;
+  opacity: 0;
+  animation: float 14s linear infinite;
+}
+
+.notes span:nth-child(1) {
+  left: 6%;
+  animation-delay: 0s;
+}
+
+.notes span:nth-child(2) {
+  left: 22%;
+  animation-delay: 3s;
+  color: #ff5fa2;
+}
+
+.notes span:nth-child(3) {
+  left: 41%;
+  animation-delay: 6s;
+}
+
+.notes span:nth-child(4) {
+  left: 63%;
+  animation-delay: 1.5s;
+  color: #ff5fa2;
+}
+
+.notes span:nth-child(5) {
+  left: 80%;
+  animation-delay: 8s;
+}
+
+.notes span:nth-child(6) {
+  left: 93%;
+  animation-delay: 4.5s;
+  color: #ff5fa2;
+}
+
+@keyframes float {
+  0% {
+    transform: translateY(0) rotate(-8deg);
+    opacity: 0;
+  }
+  10% {
+    opacity: 0.35;
+  }
+  90% {
+    opacity: 0.25;
+  }
+  100% {
+    transform: translateY(-110vh) rotate(12deg);
+    opacity: 0;
+  }
+}
+
+
+/* ---------- CABECERA Y DISPOSICIÓN GENERAL ---------- */
+
+.top, .layout {
+  position: relative;
+  z-index: 1;
+}
+
+.top {
+  text-align: center;
+  margin: 4px auto 20px;
+}
+
+.top h1 {
+  margin: 0;
+  font-family: "Dela Gothic One", "Zen Maru Gothic", sans-serif;
+  font-weight: 400;
+  font-size: clamp(2.4rem, 7vw, 4.2rem);
+  line-height: 1;
+  letter-spacing: 0.01em;
+  color: #39c5bb;
+  text-shadow: 3px 3px 0 #ff5fa2, 0 0 28px rgba(57, 197, 187, 0.45);
+}
+
+.top .jp {
+  margin: 8px 0 0;
+  color: #8fe9e1;
+  letter-spacing: 0.4em;
+  font-size: 1rem;
+}
+
+.layout {
+  max-width: 1020px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: minmax(0, 576px) minmax(240px, 1fr);
+  gap: 28px;
+  align-items: start;
+  justify-content: center;
+}
+
+
+/* ---------- MARCADOR ---------- */
+
+.hud {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.hud > div {
+  flex: 1;
+  min-width: 0;
+}
+
+.hud-label {
+  display: block;
+  font-size: 0.78rem;
+  color: #8fb3b3;
+}
+
+.hud strong {
+  display: block;
+  font-size: 1.35rem;
+  font-weight: 700;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+#hud-eaten {
+  color: #7bd66b;
+}
+
+#hud-time {
+  color: #ff5fa2;
+  font-variant-numeric: tabular-nums;
+}
+
+
+/* ---------- TABLERO DE JUEGO ---------- */
+
+.board-wrap {
+  position: relative;
+  border-radius: 18px;
+  padding: 6px;
+  background: linear-gradient(135deg, #39c5bb, #ff5fa2);
+  box-shadow:
+    0 0 40px rgba(57, 197, 187, 0.35),
+    0 0 80px rgba(255, 95, 162, 0.18);
+}
+
+canvas#board {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 1;
+  border-radius: 12px;
+  background: #0b1c24;
+  touch-action: none;
+}
+
+
+/* ---------- PANELES SOBRE EL TABLERO ---------- */
+
+.overlay {
+  position: absolute;
+  inset: 6px;
+  border-radius: 12px;
+  display: grid;
+  place-items: center;
+  background: rgba(7, 20, 27, 0.82);
+  backdrop-filter: blur(3px);
+  padding: 16px;
+}
+
+.overlay.hidden {
+  display: none;
+}
+
+.panel {
+  width: min(340px, 100%);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  text-align: center;
+}
+
+.panel[hidden] {
+  display: none;
+}
+
+.panel h2 {
+  margin: 0 0 4px;
+  font-size: 1.5rem;
+  color: #8fe9e1;
+}
+
+.panel label {
+  font-size: 0.9rem;
+  color: #8fb3b3;
+  text-align: left;
+}
+
+/* ---------- CAMPO DE NOMBRE ---------- */
+
+#player-name {
+  width: 100%;
+  padding: 12px 14px;
+  font: inherit;
+  font-size: 1.1rem;
+  color: #eafbf9;
+  background: #0f2530;
+  border: 2px solid rgba(57, 197, 187, 0.5);
+  border-radius: 12px;
+}
+
+#player-name:focus {
+  outline: none;
+  border-color: #ff5fa2;
+  box-shadow: 0 0 0 3px rgba(255, 95, 162, 0.25);
+}
+
+
+/* ---------- BOTONES ---------- */
+
+.btn {
+  font: inherit;
+  font-weight: 700;
+  font-size: 1.05rem;
+  padding: 12px 18px;
+  border-radius: 999px;
+  cursor: pointer;
+  border: 2px solid #ff5fa2;
+  background: #ff5fa2;
+  color: #2a0716;
+  transition: transform 0.12s ease, box-shadow 0.12s ease;
+}
+
+.btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 18px rgba(255, 95, 162, 0.35);
+}
+
+.btn:focus-visible {
+  outline: 3px solid #8fe9e1;
+  outline-offset: 2px;
+}
+
+.btn.ghost {
+  background: transparent;
+  color: #eafbf9;
+  border-color: rgba(143, 233, 225, 0.5);
+}
+
+.btn[hidden] {
+  display: none;
+}
+
+.hint {
+  margin: 0;
+  font-size: 0.85rem;
+  color: #8fb3b3;
+}
+
+
+/* ---------- RESULTADO ---------- */
+
+.result {
+  display: flex;
+  gap: 12px;
+  margin: 0;
+}
+
+.result > div {
+  flex: 1;
+  padding: 12px 8px;
+  border-radius: 14px;
+  background: #0f2530;
+  border: 1px solid rgba(57, 197, 187, 0.3);
+}
+
+.result dt {
+  font-size: 0.8rem;
+  color: #8fb3b3;
+}
+
+.result dd {
+  margin: 4px 0 0;
+  font-size: 1.9rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+#res-eaten {
+  color: #7bd66b;
+}
+
+#res-time {
+  color: #ff5fa2;
+}
+
+.save-status {
+  margin: 0;
+  min-height: 1.4em;
+  font-size: 0.95rem;
+  color: #8fe9e1;
+}
+
+.save-status.error {
+  color: #ff9db8;
+}
+
+.actions {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+
+/* ---------- PAUSA ---------- */
+
+.pausa-icono {
+  margin: 0;
+  font-size: 3.5rem;
+  line-height: 1;
+  color: #ff5fa2;
+}
+
+
+/* ---------- LATERAL: TOP 5 Y MENÚ ---------- */
+
+.side h2 {
+  margin: 0 0 10px;
+  font-size: 1.15rem;
+  color: #8fe9e1;
+}
+
+.side h2:not(:first-child) {
+  margin-top: 26px;
+}
+
+.ranking {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.ranking li {
+  display: grid;
+  grid-template-columns: 1.8rem 1fr auto auto;
+  gap: 10px;
+  align-items: baseline;
+  padding: 9px 4px;
+  border-bottom: 1px dashed rgba(143, 233, 225, 0.2);
+}
+
+.ranking li.empty {
+  display: block;
+  color: #8fb3b3;
+}
+
+.ranking .pos {
+  color: #8fb3b3;
+  font-variant-numeric: tabular-nums;
+}
+
+.ranking .who {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.ranking .pts {
+  color: #7bd66b;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.ranking .tm {
+  color: #ff5fa2;
+  font-size: 0.9rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.ranking li:nth-child(1) .pos {
+  color: #ff5fa2;
+  font-weight: 700;
+}
+
+.ranking li:nth-child(1) .who {
+  color: #39c5bb;
+  font-weight: 700;
+}
+
+.menu-list {
+  list-style: none;
+  margin: 0 0 12px;
+  padding: 0;
+  display: grid;
+  gap: 6px;
+}
+
+.menu-list li {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.emo {
+  width: 22px;
+  text-align: center;
+}
+
+.menu-list .valor {
+  margin-left: auto;
+  color: #7bd66b;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.dot.negi {
+  width: 8px;
+  height: 20px;
+  margin: 0 7px;
+  border-radius: 4px;
+  display: inline-block;
+  background: linear-gradient(#7bd66b 55%, #f3f9ee 55%);
+  transform: rotate(25deg);
+}
+
+
+/* ---------- ADAPTACIÓN A PANTALLAS PEQUEÑAS ---------- */
+
+@media (max-width: 860px) {
+  .layout {
+    grid-template-columns: minmax(0, 576px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .notes span {
+    animation: none;
+  }
+  .btn {
+    transition: none;
+  }
+}
