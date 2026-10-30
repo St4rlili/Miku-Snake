@@ -5,22 +5,22 @@
 Un juego de la serpiente (Snake) con tema de Hatsune Miku y los Vocaloid. Antes de empezar
 se pide el nombre del jugador y, al terminar la partida, se guardan su **nombre**, sus
 **puntos** y el **tiempo** que ha durado. En la página se muestra el top 5 de mejores
-partidas, aunque en la base de datos se guardan todas.
+partidas.
 
 ## Cómo se juega
 
 - **Moverse:** flechas del teclado o WASD.
 - **Pausa:** Espacio. Vuelve a pulsarlo (o pulsa "Continuar") para reanudar. El tiempo en pausa no cuenta.
 - **Objetivo:** comer sin chocar con las paredes ni con tu propio cuerpo.
-- **Puntos:** cada comida es de un personaje y vale distinto. Cuanto más vale, menos aparece.
+- **Puntos:** cada comida es de un personaje y vale distinto (el tamaño de la serpiente aumenta en base a ese valor). Cuanto más vale, menos aparece.
 
 | Comida | Personaje | Puntos |
 |---|---|---|
 | Puerro | Miku | 1 |
 | Naranja | Rin | 2 |
 | Plátano | Len | 2 |
-| Helado | Kaito | 3 |
 | Atún | Luka | 3 |
+| Helado | Kaito | 4 |
 | Sake | Meiko | 5 |
 
 El ranking ordena por más puntos y, si hay empate, gana quien haya tardado menos.
@@ -34,9 +34,9 @@ Navegador -> PHP (web/api/scores.php) -> Node + Express (server.js) -> MongoDB A
 - **HTML, CSS y JavaScript** (`web/`): la página y el juego, que se dibuja en un `canvas`.
 - **PHP** (`web/api/scores.php`): recibe las peticiones del juego, comprueba los datos y las reenvía a Node.
 - **Node.js** (`server.js`): valida los datos otra vez y los guarda o lee en MongoDB. Solo acepta peticiones de PHP, que le manda una clave (`API_KEY`).
-- **MongoDB Atlas**: guarda cada partida en la colección `scores` con `name`, `score` (puntos), `time` (segundos) y `createdAt`.
+- **MongoDB Atlas**: guarda las mejores 5 partidas en la colección `vocaloidSnake` con `name`, `score` (puntos), `time` (segundos) y `createdAt`. Si alguna partida supera las anteriores y entra al top 5 se elimina la peor de ellas.
 
-Los sprites de la serpiente están en `web/img/` (`cabeza.png`, `cuerpo.png`, `cola.png`).
+Los sprites de la serpiente están en `web/img/` (`cabeza.png`, `cuerpo.png`, `cola.png`) y son de 24x24 píxeles.
 Se pueden cambiar por otros con el mismo nombre: cuadrados, con fondo transparente y dibujados
 como si la serpiente fuera hacia la derecha. Si falta alguno, se dibuja un cuadrado de color.
 
@@ -96,4 +96,4 @@ docker compose up
 - `web/api/scores.php`: pasarela entre el juego y Node.
 - `web/js/game.js`: el juego.
 - `web/css/style.css`: los estilos.
-- `web/img/`: sprites de la serpiente.
+- `web/img/`: sprites de la serpiente (los hice yo :D).
