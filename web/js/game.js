@@ -41,6 +41,7 @@ let colaDirecciones = [];
 let comida = null;
 let comidaComida = null;
 let puntos = 0;
+let piezasPorCrecer = 0;
 let ultimoPaso = 0;
 let inicio = 0;
 let tiempoFinal = 0;
@@ -51,12 +52,12 @@ let nombre = "";
 
 // Cada comida es de un personaje y vale X puntos, a más puntos menos probable es que aparezca.
 const tiposComida = [
-  { tipo: "negi", puntos: 1, probabilidad: 40 },
-  { tipo: "🍊", puntos: 2, probabilidad: 20 },
-  { tipo: "🍌", puntos: 2, probabilidad: 20 },
-  { tipo: "🍦", puntos: 3, probabilidad: 10 },
-  { tipo: "🐟", puntos: 3, probabilidad: 7 },
-  { tipo: "🍶", puntos: 5, probabilidad: 3 }
+  { tipo: "negi", puntos: 1, probabilidad: 50 },
+  { tipo: "🍊", puntos: 2, probabilidad: 15 },
+  { tipo: "🍌", puntos: 2, probabilidad: 15 },
+  { tipo: "🐟", puntos: 3, probabilidad: 10 },
+  { tipo: "🍦", puntos: 4, probabilidad: 8 },
+  { tipo: "🍶", puntos: 5, probabilidad: 2 }
 ];
 
 // ---------- PANELES ----------
@@ -84,6 +85,7 @@ function empezarPartida() {
   direccion = { x: 1, y: 0 };
   colaDirecciones = [];
   puntos = 0;
+  piezasPorCrecer = 0
   comidaComida = null;
   pausado = false;
   jugando = true;
@@ -207,12 +209,18 @@ function mover() {
   serpiente.unshift(cabeza);
 
   if (cabeza.x == comida.x && cabeza.y == comida.y) {
-    // Ha comido: no quitamos la cola, así crece
+    // Si ha comido suma los puntos y crece en función de la cantidad
     puntos = puntos + comida.puntos;
+    piezasPorCrecer = piezasPorCrecer + comida.puntos;
     comidaComida = comida;
     crearComida();
+  } 
+  
+  if (piezasPorCrecer > 0) {
+    // Si crece no quitamos la cola
+    piezasPorCrecer = piezasPorCrecer - 1;
   } else {
-    // No ha comido: quitamos la cola
+    // No crece y quitamos la cola
     serpiente.pop();
   }
 }
@@ -389,8 +397,14 @@ async function guardarPuntuacion() {
       estadoGuardado.className = "save-status error";
       estadoGuardado.textContent = "No se pudo guardar: " + datos.error;
       btnReintentar.hidden = false;
-    } else {
-      estadoGuardado.textContent = "Puntuación guardada";
+    } 
+    else {
+      if (datos.guardada) {
+        estadoGuardado.textContent = "¡Has entrado en el top 5!"
+      }
+      else {
+        estadoGuardado.textContent = "No has entrado en el top 5 :("
+      }
       cargarRanking();
     }
   } catch (error) {

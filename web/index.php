@@ -15,7 +15,7 @@
 
   <header class="top">
     <h1>Miku Snake</h1>
-    <p class="jp" lang="ja">初音ミク</p>
+    <p class="jp" lang="ja">初音ミク蛇</p>
   </header>
 
   <main class="layout">
@@ -73,12 +73,12 @@
 
       <h2>Menú del día</h2>
       <ul class="menu-list">
-        <li><i class="dot negi"></i> Puerro de Miku <span class="valor">+1</span></li>
-        <li><span class="emo">🍊</span> Naranja de Rin <span class="valor">+2</span></li>
-        <li><span class="emo">🍌</span> Plátano de Len <span class="valor">+2</span></li>
-        <li><span class="emo">🍦</span> Helado de Kaito <span class="valor">+3</span></li>
-        <li><span class="emo">🐟</span> Atún de Luka <span class="valor">+3</span></li>
-        <li><span class="emo">🍶</span> Sake de Meiko <span class="valor">+5</span></li>
+        <li><i class="dot negi"></i> Puerro de Miku (50%) <span class="valor">+1</span></li>
+        <li><span class="emo">🍊</span> Naranja de Rin (15%) <span class="valor">+2</span></li>
+        <li><span class="emo">🍌</span> Plátano de Len (15%) <span class="valor">+2</span></li>
+        <li><span class="emo">🐟</span> Atún de Luka (10%) <span class="valor">+3</span></li>
+        <li><span class="emo">🍦</span> Helado de Kaito (8%) <span class="valor">+4</span></li>
+        <li><span class="emo">🍶</span> Sake de Meiko (2%) <span class="valor">+5</span></li>
       </ul>
       <p class="hint">Cuanto más puntos vale una comida, menos veces aparece.</p>
     </aside>

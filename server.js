@@ -10,6 +10,7 @@ const API_KEY = process.env.API_KEY || "cambia-esta-clave";
 const MONGODB_URI = process.env.MONGODB_URI;
 const NOMBRE_BD = process.env.MONGODB_DB || "miku_snake";
 const NOMBRE_COLECCION = process.env.MONGODB_COLLECTION || "scores";
+const LIMITE_TOP = 5;
 
 const app = express();
 app.use(express.json());
@@ -68,13 +69,47 @@ app.post("/scores", async function (req, res) {
   };
 
   try {
-    await coleccion.insertOne(nueva);
-    res.status(201).json({ ok: true });
+    const guardada = await guardarSiEntraEnTop(nueva);
+    res.json({ ok: true, guardada: guardada});
   } catch (error) {
     console.log(error);
     res.status(500).json({ error: "No se pudo guardar la puntuación" });
   }
 });
+
+async function guardarSiEntraEnTop(nueva) {
+  const mejores = await coleccion
+    .find({})
+    .sort({ score: -1, time: 1})
+    .limit(LIMITE_TOP)
+    .toArray();
+
+    if (mejores.length >= LIMITE_TOP) {
+      const peor = mejores[mejores.length -1];
+      const esMejor = nueva.score > peor.score || (nueva.score == peor.score && nueva.time < peor.time);
+      if (!esMejor) {
+        return false;
+      }
+    }
+  await coleccion.insertOne(nueva);
+  await borrarSobrantes();
+  return true;
+}
+
+async function borrarSobrantes() {
+  const sobrantes = await coleccion
+    .find({}, { projection: { _id: 1 }})
+    .sort({ score: -1, time: 1 })
+    .skip(LIMITE_TOP)
+    .toArray();
+  
+  if (sobrantes.length > 0) {
+    const ids = sobrantes.map(function(doc) {
+      return doc._id;
+    });
+    await coleccion.deleteMany({ _id: { $in: ids }});
+  }
+}
 
 async function arrancar() {
   if (!MONGODB_URI) {
@@ -86,6 +121,8 @@ async function arrancar() {
     const cliente = new MongoClient(MONGODB_URI);
     await cliente.connect();
     coleccion = cliente.db(NOMBRE_BD).collection(NOMBRE_COLECCION);
+    await coleccion.createIndex({ score: -1, time: 1});
+    await borrarSobrantes();
     console.log("Conectado a MongoDB Atlas (bd: " + NOMBRE_BD + ", colección: " + NOMBRE_COLECCION + ")");
   } catch (error) {
     console.log("No se pudo conectar a MongoDB Atlas: " + error.message);
